@@ -1,0 +1,3 @@
+[submodule "nav"]
+	path = nav
+	url = git@github.com:UNINETT/nav.git
