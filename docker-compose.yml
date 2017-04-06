@@ -1,0 +1,38 @@
+version: '2'
+services:
+  nav:
+    build: .
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./data/log:/usr/local/nav/var/log
+      - ./data/roomimages:/usr/local/nav/var/uploads/images/rooms
+    depends_on:
+      - postgres
+      - graphite
+    links:
+      - postgres
+      - graphite
+    environment:
+      - PGHOST=postgres
+      - PGDATABASE=nav
+      - PGUSER=nav
+      - PGPORT=5432
+      - CARBONHOST=graphite
+      - CARBONPORT=2003
+      - GRAPHITEWEB=http://graphite:8000/
+
+  postgres:
+    image: "postgres:9.4"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+
+  graphite:
+    build: ./nav/tools/docker/graphite
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./nav/etc/graphite/storage-schemas.conf:/opt/graphite/conf/storage-schemas.conf
+      - ./nav/etc/graphite/storage-aggregation.conf:/opt/graphite/conf/storage-aggregation.conf
+      - ./data/graphite:/var/lib/graphite
