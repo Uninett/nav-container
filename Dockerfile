@@ -26,14 +26,12 @@ COPY nav/requirements.txt /
 COPY .wheels/ /wheelhouse
 RUN pip install --no-index --find-links=/wheelhouse -r requirements.txt
 
+# Install NAV itself
 RUN adduser --system --group --no-create-home --home=/usr/local/nav --shell=/bin/bash nav
 COPY .build/ /
 RUN chown -R nav /usr/local/nav
 RUN echo "import sys\nsys.path.extend(['/usr/local/nav/lib/python', '/usr/lib/python2.7/dist-packages'])" > /usr/local/lib/python2.7/sitecustomize.py
 
-
-ENV    PATH /usr/local/nav/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin
-RUN    echo "PATH=$PATH" > /etc/profile.d/navpath.sh
 
 # Add Tini
 ENV TINI_VERSION v0.14.0
@@ -41,6 +39,7 @@ ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 RUN chmod +x /tini
 ENTRYPOINT ["/tini", "--"]
 
+# Install our config and entrypoints
 COPY etc/ /etc
 COPY docker-entrypoint.sh /
 COPY docker-initdb.sh /
@@ -49,6 +48,8 @@ RUN a2dissite 000-default; a2ensite nav-site
 # Our own prep program
 CMD ["/docker-entrypoint.sh"]
 
-
+# Final environment
+ENV    PATH /usr/local/nav/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin
+RUN    echo "PATH=$PATH" > /etc/profile.d/navpath.sh
 VOLUME ["/usr/local/nav/var/log", "/usr/local/nav/var/uploads/images/rooms"]
-EXPOSE 80 443
+EXPOSE 80
