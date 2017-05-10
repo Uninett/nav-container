@@ -50,6 +50,10 @@ CMD ["/docker-entrypoint.sh"]
 
 # Final environment
 ENV    PATH /usr/local/nav/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin
+ENV    ADMIN_MAIL root@localhost
+ENV    DEFAULT_FROM_EMAIL nav@localhost
+ENV    DOMAIN_SUFFIX .example.org
+
 RUN    echo "PATH=$PATH" > /etc/profile.d/navpath.sh
 VOLUME ["/usr/local/nav/var/log", "/usr/local/nav/var/uploads/images/rooms"]
 EXPOSE 80
