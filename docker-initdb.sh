@@ -1,6 +1,7 @@
 #!/bin/sh
 NAVETC=/usr/local/nav/etc
 DBCONF="$NAVETC/db.conf"
+NOINITDB=${NOINITDB:-0}
 DB=${PGDATABASE:-nav}
 USER=${PGUSER:-nav}
 HOST=${PGHOST:-postgres}
@@ -18,18 +19,20 @@ EOF
 
 >&2 cat "$DBCONF"
 
-export PGHOST="$HOST"
-export PGUSER="postgres"
-export PGDATABASE="$DB"
-export PGPORT="$PORT"
-export PGPASSWORD="$PASSWORD"
+if [ "${NOINITDB}" -eq 0 ]; then
+   export PGHOST="$HOST"
+   export PGUSER="postgres"
+   export PGDATABASE="$DB"
+   export PGPORT="$PORT"
+   export PGPASSWORD="$PASSWORD"
+fi
 
 until psql -l; do
     >&2 echo "Postgres is unavailable - sleeping"
     sleep 1
 done
 
-if ! (psql -l | grep -q "$DB"); then
+if [ "${NOINITDB}" -eq 0 ] && ! (psql -l | grep -q "$DB"); then
    echo "Initializing a new database schema"
    navsyncdb -c
 fi

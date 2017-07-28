@@ -22,6 +22,7 @@ services:
       - CARBONHOST=graphite
       - CARBONPORT=2003
       - GRAPHITEWEB=http://graphite:8000/
+      - NOINITDB=0
     env_file:
       - nav-variables.env
 
