@@ -13,13 +13,13 @@ These commands should be sufficient to get things up and running using Docker
 Compose:
 
 ```
-./build.sh
+make
 docker-compose up
 ```
 
-This should bring up three containers, one for NAV, one for PostgreSQL and one
-for Graphite. These will have various data and log directories mounted under
-the `data/` directory.
+This should bring up various containers, for NAV, PostgreSQL and Graphite.
+These will have various data and log directories mounted under the `data/`
+directory.
 
 How it's organized
 ------------------
@@ -31,12 +31,15 @@ example config). Supervisord is used to start and supervise all NAV services
 you go container-based, it doesn't make much sense to control individual NAV
 services by starting up a shell process inside an existing container to do so.
 
-The `graphite` container is defined by the development version provided in
-NAV's source code, and consists of a single `carbon-cache` daemon listening to
-standard ports 2003 and 2004, and a `graphite-web` process on port 8000 (as of
-NAV 4.7.1). All processes are supervised by `supervisord`. NAV's example
+A fully distributed/scalable Graphite infrastructure is not provided, but the
+two minimum requirements of a `carbon-cache` daemon and a `graphite-web`
+interface is provided by two separate containers. These two containers will
+share a storage volume mounted from a third container. NAV's recommended
 configuration for carbon storage schemas and aggregation rules are installed
-into the image directly from the NAV source code.
+into the `carbon-cache` image directly from the NAV source code.
+
+https://github.com/Banno/graphite-setup was a good inspiration, and should be
+looked at if you want to scale out your Graphite install.
 
 The `postgres` container is a bog standard `postgres` image from the Docker
 Hub.
@@ -71,10 +74,7 @@ Ideas for future improvement
   so that one can configure one's own user-facing nginx proxy with SSL in
   front of it.
 - What to do about accessing the various configuration options spread
-  throughout NAV's configuration files? Only the database config is supported
-  so far. Configuring an SMTP relay server, a domain, etc. should also be in
-  there.
-- The graphite container could potentially be split into two, since it
-  provides two different services with shared storage.
-  https://github.com/Banno/graphite-setup might actually be a good source of
-  inspiration here.
+  throughout NAV's configuration files? Only options affecting access to
+  external services such as PostgreSQL and Graphite are supported so far.
+  Configuring an SMTP relay server, a domain, etc. should also be in there.
+- memcache integration is a *must* for production use of graphite-web.
