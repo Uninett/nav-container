@@ -10,18 +10,20 @@ services:
       - ./data/roomimages:/usr/local/nav/var/uploads/images/rooms
     depends_on:
       - postgres
-      - graphite
+      - carbon-cache
+      - graphite-web
     links:
       - postgres
-      - graphite
+      - carbon-cache
+      - graphite-web
     environment:
       - PGHOST=postgres
       - PGDATABASE=nav
       - PGUSER=nav
       - PGPORT=5432
-      - CARBONHOST=graphite
+      - CARBONHOST=carbon-cache
       - CARBONPORT=2003
-      - GRAPHITEWEB=http://graphite:8000/
+      - GRAPHITEWEB=http://graphite-web/
       - NOINITDB=0
     env_file:
       - nav-variables.env
@@ -31,11 +33,28 @@ services:
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
 
-  graphite:
-    build: ./nav/tools/docker/graphite
-    ports:
-      - "8000:8000"
+  carbon-cache:
+    build: ./carbon-cache
     volumes:
-      - ./nav/etc/graphite/storage-schemas.conf:/opt/graphite/conf/storage-schemas.conf
-      - ./nav/etc/graphite/storage-aggregation.conf:/opt/graphite/conf/storage-aggregation.conf
-      - ./data/graphite:/var/lib/graphite
+      - ./nav/etc/graphite/storage-schemas.conf:/var/lib/graphite/conf/storage-schemas.conf
+      - ./nav/etc/graphite/storage-aggregation.conf:/var/lib/graphite/conf/storage-aggregation.conf
+    volumes_from:
+      - whisper
+
+  graphite-web:
+    build: ./graphite-web
+    # We don't really want this to be public, since there is no authentication
+    # ports:
+    #   - "8000:80"
+    links:
+      - carbon-cache
+    environment:
+      - TIME_ZONE=Europe/Oslo
+      - CARBONLINK_HOSTS=carbon-cache:7002
+    volumes_from:
+      - whisper
+
+  whisper:
+    image: busybox
+    volumes:
+      - ./data/whisper:/var/lib/graphite/storage/whisper
