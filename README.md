@@ -53,17 +53,35 @@ environment variables. The rest of the NAV config must either be manipulated
 through editing the files inside the running container, or mounting the config
 files from external media.
 
-| Variable    | Description                                       |
-| ----------- | ------------------------------------------------- |
-| PGHOST      | PostgreSQL server host name or IP                 |
-| PGPORT      | PostgreSQL server port                            |
-| PGDATABASE  | PostgreSQL database name where NAV can store data |
-| PGUSER      | Username used to access the PostgreSQL database   |
-| PGPASSWORD  | Password to use for the PostgreSQL user           |
-| NOINITDB    | If set to 1, the container will assume the database has already been created externally and will only run schema updates against it. If set to 0, the container will assume it can access PostgreSQL as the postgres superuser without a password and attempt to create the database and user   |
-| CARBONHOST  | The hostname or IP of the carbon backend to use   |
-| CARBONPORT  | The port number of the carbon backend             |
-| GRAPHITEWEB | The URL to the graphite-web interface             |
+| Variable      | Description                                       |
+| ------------- | ------------------------------------------------- |
+| `PGHOST`      | PostgreSQL server host name or IP                 |
+| `PGPORT`      | PostgreSQL server port                            |
+| `PGDATABASE`  | PostgreSQL database name where NAV can store data |
+| `PGUSER`      | Username used to access the PostgreSQL database   |
+| `PGPASSWORD`  | Password to use for the PostgreSQL user           |
+| `NOINITDB`    | If set to 1, the container will assume the database has already been created externally and will only run schema updates against it. If set to 0, the container will assume it can access PostgreSQL as the postgres superuser without a password and attempt to create the database and user   |
+| `CARBONHOST`  | The hostname or IP of the carbon backend to use   |
+| `CARBONPORT`  | The port number of the carbon backend             |
+| `GRAPHITEWEB` | The URL to the graphite-web interface             |
+
+These variables from
+[nav.conf](https://github.com/UNINETT/nav/blob/master/etc/nav.conf) can also
+be supplied as environment variables:
+
+| Variable              |
+| --------------------- |
+| `ADMIN_MAIL`          |
+| `DEFAULT_FROM_EMAIL`  |
+| `SECRET_KEY`          |
+| `EMAIL_HOST`          |
+| `EMAIL_PORT`          |
+| `EMAIL_HOST_USER`     |
+| `EMAIL_HOST_PASSWORD` |
+| `EMAIL_USE_TLS`       |
+| `DOMAIN_SUFFIX`       |
+| `DJANGO_DEBUG`        |
+| `TIME_ZONE`           |
 
 
 Ideas for future improvement
