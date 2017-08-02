@@ -63,6 +63,14 @@ done
 cat /usr/local/nav/etc/cron.d/* | crontab -u nav -
 
 
+##########################################
+#                                        #
+# Verify permissions on writable volumes #
+#                                        #
+##########################################
+chown -R nav /usr/local/nav/var/uploads/images/rooms
+chown -R nav /usr/local/nav/var/log
+
 
 ################################
 #                              #
