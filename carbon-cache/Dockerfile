@@ -1,5 +1,6 @@
 FROM python:2.7
 LABEL description="A carbon-cache instance configured explicitly for use with NAV"
+LABEL maintainer="Morten Brekkevold <morten.brekkevold@uninett.no>"
 
 # Add Tini
 ENV TINI_VERSION v0.14.0

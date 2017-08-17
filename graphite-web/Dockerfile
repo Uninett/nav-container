@@ -1,4 +1,5 @@
 FROM python:2.7
+LABEL maintainer="Morten Brekkevold <morten.brekkevold@uninett.no>"
 
 # Add Tini
 ENV TINI_VERSION v0.14.0

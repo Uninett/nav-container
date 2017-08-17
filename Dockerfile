@@ -1,4 +1,5 @@
 FROM python:2.7
+LABEL maintainer="Morten Brekkevold <morten.brekkevold@uninett.no>"
 
 RUN apt-get update \
     && apt-get -y --no-install-recommends install \
