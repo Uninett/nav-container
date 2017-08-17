@@ -11,10 +11,6 @@ services:
       - postgres
       - carbon-cache
       - graphite-web
-    links:
-      - postgres
-      - carbon-cache
-      - graphite-web
     environment:
       - PGHOST=postgres
       - PGDATABASE=nav
@@ -42,8 +38,6 @@ services:
     # We don't really want this to be public, since there is no authentication
     # ports:
     #   - "8000:80"
-    links:
-      - carbon-cache
     environment:
       - TIME_ZONE=Europe/Oslo
       - CARBONLINK_HOSTS=carbon-cache:7002
