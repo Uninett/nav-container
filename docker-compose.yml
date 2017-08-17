@@ -34,9 +34,6 @@ services:
 
   carbon-cache:
     build: ./carbon-cache
-    volumes:
-      - ./nav/etc/graphite/storage-schemas.conf:/var/lib/graphite/conf/storage-schemas.conf
-      - ./nav/etc/graphite/storage-aggregation.conf:/var/lib/graphite/conf/storage-aggregation.conf
     volumes_from:
       - whisper
 

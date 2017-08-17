@@ -1,4 +1,5 @@
 FROM python:2.7
+LABEL description="A carbon-cache instance configured explicitly for use with NAV"
 
 # Add Tini
 ENV TINI_VERSION v0.14.0
@@ -16,9 +17,9 @@ RUN pip install whisper
 RUN pip install carbon --install-option="--install-scripts=/usr/local/bin" --install-option="--install-lib=$LIBDIR" --install-option="--install-data=/var/lib/graphite"
 
 # Basic configuration and permissions
-ADD carbon.conf /var/lib/graphite/conf/
-RUN cp $GRAPHITE_CONF_DIR/storage-schemas.conf.example $GRAPHITE_CONF_DIR/storage-schemas.conf && \
-    cp $GRAPHITE_CONF_DIR/storage-aggregation.conf.example $GRAPHITE_CONF_DIR/storage-aggregation.conf
+COPY carbon.conf ${GRAPHITE_CONF_DIR}/carbon.conf
+COPY storage-schemas.conf ${GRAPHITE_CONF_DIR}/storage-schemas.conf
+COPY storage-aggregation.conf ${GRAPHITE_CONF_DIR}/storage-aggregation.conf
 
 RUN chown -R graphite:graphite /var/lib/graphite
 

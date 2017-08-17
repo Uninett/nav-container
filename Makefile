@@ -11,13 +11,19 @@ nav:
 	docker run -ti --rm -v "$(CURDIR):/source" --cap-drop=all -u "$(uid)" "$(BUILDIMAGE)"
 	docker build -t $(REPO)/nav .
 
-carbon-cache:
-	docker build -t $(REPO)/carbon-cache carbon-cache
+carbon-cache/storage-schemas.conf: nav/etc/graphite/storage-schemas.conf
+	cp nav/etc/graphite/storage-schemas.conf carbon-cache/
+
+carbon-cache/storage-aggregation.conf: nav/etc/graphite/storage-aggregation.conf
+	cp nav/etc/graphite/storage-aggregation.conf carbon-cache/
+
+carbon-cache: carbon-cache/storage-schemas.conf carbon-cache/storage-aggregation.conf
+	docker build -t $(REPO)/nav-carbon-cache carbon-cache
 
 graphite-web:
 	graphite-web; docker build -t $(REPO)/graphite-web graphite-web
 
 push:
 	docker push $(REPO)/nav
-	docker push $(REPO)/carbon-cache
+	docker push $(REPO)/nav-carbon-cache
 	docker push $(REPO)/graphite-web

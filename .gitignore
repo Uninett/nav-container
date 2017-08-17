@@ -1,3 +1,4 @@
 /.build
 /.wheels
 /data
+/carbon-cache/storage-*.conf
