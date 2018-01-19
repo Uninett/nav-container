@@ -6,8 +6,10 @@ NAVROOT=/usr/local/nav
 # Ensure PostgreSQL database is ready #
 #                                     #
 #######################################
-/docker-initdb.sh
-
+SKIPDBTEST=${SKIPDBTEST:-0}
+if [ "${SKIPDBTEST}" -eq 0 ]; then
+    /docker-initdb.sh
+fi
 
 ###################################
 #                                 #

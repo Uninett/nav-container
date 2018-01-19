@@ -61,7 +61,7 @@ files from external media.
 | `PGUSER`      | Username used to access the PostgreSQL database   |
 | `PGPASSWORD`  | Password to use for the PostgreSQL user           |
 | `NOINITDB`    | If set to 1, the container will assume the database has already been created externally and will only run schema updates against it. If set to 0, the container will assume it can access PostgreSQL as the postgres superuser without a password and attempt to create the database and user   |
-| `CARBONHOST`  | The hostname or IP of the carbon backend to use   |
+| `SKIPDBTEST`    | If set to 1, the container will skip all PostgreSQL connection wait and schema init or schema sync steps |
 | `CARBONPORT`  | The port number of the carbon backend             |
 | `GRAPHITEWEB` | The URL to the graphite-web interface             |
 
