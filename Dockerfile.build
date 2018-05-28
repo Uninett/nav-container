@@ -1,4 +1,4 @@
-FROM python:2.7
+FROM python:2.7-jessie
 ENV REPO ftp.no.debian.org
 # We need source archives as well
 RUN echo "\n\
