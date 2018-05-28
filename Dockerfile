@@ -1,4 +1,4 @@
-FROM python:2.7
+FROM python:2.7-jessie
 LABEL maintainer="Morten Brekkevold <morten.brekkevold@uninett.no>"
 
 RUN apt-get update \
