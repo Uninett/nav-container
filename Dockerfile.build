@@ -31,7 +31,7 @@ RUN apt-get update \
 COPY nav/requirements/ /requirements
 COPY nav/requirements.txt /
 RUN pip wheel -w /wheelhouse -r /requirements.txt
-RUN pip install --use-wheel --no-index --find-links=/wheelhouse -r /requirements.txt
+RUN pip install --no-index --find-links=/wheelhouse -r /requirements.txt
 
 
 VOLUME  ["/source"]
