@@ -74,9 +74,9 @@ chown -R nav /usr/local/nav/var/uploads/images/rooms
 chown -R nav /usr/local/nav/var/log
 
 
-################################
-#                              #
-# Have supervisord do the rest #
-#                              #
-################################
-exec /usr/bin/supervisord -n
+##########################
+#                        #
+# Run the user's command #
+#                        #
+##########################
+exec "$@"

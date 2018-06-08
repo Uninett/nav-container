@@ -38,7 +38,7 @@ RUN echo "import sys\nsys.path.extend(['/usr/local/nav/lib/python', '/usr/lib/py
 ENV TINI_VERSION v0.14.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 RUN chmod +x /tini
-ENTRYPOINT ["/tini", "--"]
+ENTRYPOINT ["/tini", "--", "/docker-entrypoint.sh"]
 
 # Install our config and entrypoints
 COPY etc/ /etc
@@ -46,8 +46,8 @@ COPY docker-entrypoint.sh /
 COPY docker-initdb.sh /
 RUN a2dissite 000-default; a2ensite nav-site
 
-# Our own prep program
-CMD ["/docker-entrypoint.sh"]
+# Run all NAV processes in one container by default
+CMD ["/usr/bin/supervisord", "-n"]
 
 # Final environment
 ENV    PATH /usr/local/nav/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin
