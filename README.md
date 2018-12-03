@@ -1,13 +1,11 @@
-Containerized NAV distribution
-------------------------------
+# Containerized NAV distribution
 
 This project aims to package NAV for containerized production distribution,
 using Docker and docker-compose, which could later be used as a basis for
 deploying on Kubernetes.
 
 
-How to build and run
---------------------
+## How to build and run
 
 These commands should be sufficient to get things up and running using Docker
 Compose:
@@ -21,8 +19,7 @@ This should bring up various containers, for NAV, PostgreSQL and Graphite.
 These will have various data and log directories mounted under the `data/`
 directory.
 
-How it's organized
-------------------
+## How it's organized
 
 The `nav` container includes all NAV backend processes and the NAV web
 interfaces served through Apache2/mod_wsgi (using NAV's supplied Apache
@@ -45,8 +42,8 @@ The `postgres` container is a bog standard `postgres` image from the Docker
 Hub.
 
 
-Configuration
--------------
+## Configuration
+
 
 The NAV container will accept various basic and necessary options as
 environment variables. The rest of the NAV config must either be manipulated
@@ -84,8 +81,8 @@ be supplied as environment variables:
 | `TIME_ZONE`           |
 
 
-Ideas for future improvement
-----------------------------
+
+## Ideas for future improvement
 
 - Apache may be replaced by nginx
 - The entire web app should maybe just provide a WSGI interface using uwsgi,
