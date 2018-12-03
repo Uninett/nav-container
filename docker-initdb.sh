@@ -39,8 +39,13 @@ until psql -l; do
 done
 
 if [ "${NOINITDB}" -eq 0 ] && ! (psql -l | grep -q "$DB"); then
-   log "Initializing a new database schema"
-   navsyncdb -c
+    if [ -f "/database.sql" ]; then
+	log "Initializing a new database schema from /database.sql"
+	navsyncdb -c -r /database.sql
+    else
+        log "Initializing a new database schema"
+        navsyncdb -c
+    fi
 fi
 
 log "Synchronizing database schema"

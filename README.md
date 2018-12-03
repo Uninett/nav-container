@@ -80,7 +80,12 @@ be supplied as environment variables:
 | `DJANGO_DEBUG`        |
 | `TIME_ZONE`           |
 
+## Using an existing database dump
 
+If you wish to bootstrap your NAV installation from an existing database dump
+(made from the `navpgdump` program), you can do so by mounting the dump file to
+the nav container as `/database.sql`. The database will be initialized with this
+as the baseline the first time the container is started.
 
 ## Ideas for future improvement
 
