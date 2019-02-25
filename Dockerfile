@@ -28,11 +28,9 @@ COPY .wheels/ /wheelhouse
 RUN pip install --no-index --find-links=/wheelhouse -r requirements.txt
 
 # Install NAV itself
-RUN adduser --system --group --no-create-home --home=/usr/local/nav --shell=/bin/bash nav
+RUN adduser --system --group --home=/usr/local/nav --shell=/bin/bash nav
 COPY .build/ /
-RUN chown -R nav /usr/local/nav
-RUN echo "import sys\nsys.path.extend(['/usr/local/nav/lib/python', '/usr/lib/python2.7/dist-packages'])" > /usr/local/lib/python2.7/sitecustomize.py
-
+RUN mkdir /etc/nav &&  chown nav /etc/nav && su nav -c 'nav config install /etc/nav'
 
 # Add Tini
 ENV TINI_VERSION v0.14.0
