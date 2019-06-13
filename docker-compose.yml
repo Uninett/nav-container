@@ -5,8 +5,8 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./data/log:/usr/local/nav/var/log
-      - ./data/roomimages:/usr/local/nav/var/uploads/images/rooms
+      - ./data/log:/var/log/nav
+      - ./data/roomimages:/var/lib/nav/uploads/images/rooms
     depends_on:
       - postgres
       - carbon-cache

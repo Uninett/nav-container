@@ -1,5 +1,5 @@
 #!/bin/sh
-NAVETC=/usr/local/nav/etc
+NAVETC=/etc/nav
 DBCONF="$NAVETC/db.conf"
 NOINITDB=${NOINITDB:-0}
 DB=${PGDATABASE:-nav}

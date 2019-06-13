@@ -1,5 +1,4 @@
 #!/bin/bash -e
-NAVROOT=/usr/local/nav
 
 #######################################
 #                                     #
@@ -20,7 +19,7 @@ CARBONHOST=${CARBONHOST:-graphite}
 CARBONPORT=${CARBONPORT:-2003}
 GRAPHITEWEB=${GRAPHITEWEB:-http://graphite:8000/}
 
-cat > "$NAVROOT/etc/graphite.conf" <<EOF
+cat > "/etc/nav/graphite.conf" <<EOF
 [carbon]
 host = ${CARBONHOST}
 port = ${CARBONPORT}
@@ -34,8 +33,8 @@ EOF
 # Configure basic NAV parameters #
 #                                #
 ##################################
-NAVCONF="$NAVROOT/etc/nav.conf"
-SECRETPERSIST="$NAVROOT/etc/secret.persist"
+NAVCONF="/etc/nav/nav.conf"
+SECRETPERSIST="/etc/nav/secret.persist"
 
 if [ -z "$SECRET_KEY" ] && [ -f "$SECRETPERSIST" ]; then
     . "$SECRETPERSIST" || true
@@ -46,7 +45,13 @@ if [ -z "$SECRET_KEY" ]; then
     echo "SECRET_KEY=${SECRET_KEY}" > "$SECRETPERSIST"
 fi
 
-echo "# Generated at $(date)" > "$NAVCONF"
+cat > "$NAVCONF" <<EOF
+# Generated at $(date)
+NAV_USER=nav
+PID_DIR=/tmp
+LOG_DIR=/var/log/nav
+UPLOAD_DIR=/var/lib/nav/uploads
+EOF
 for var in ADMIN_MAIL DEFAULT_FROM_EMAIL SECRET_KEY EMAIL_HOST EMAIL_PORT EMAIL_HOST_USER EMAIL_HOST_PASSWORD EMAIL_USE_TLS DOMAIN_SUFFIX DJANGO_DEBUG TIME_ZONE; do
 
     if [ -n "${!var}" ]; then
@@ -62,7 +67,7 @@ done
 # Set up all NAV cron jobs #
 #                          #
 ############################
-cat /usr/local/nav/etc/cron.d/* | crontab -u nav -
+cat /etc/nav/cron.d/* | crontab -u nav -
 
 
 ##########################################
@@ -70,8 +75,8 @@ cat /usr/local/nav/etc/cron.d/* | crontab -u nav -
 # Verify permissions on writable volumes #
 #                                        #
 ##########################################
-chown -R nav /usr/local/nav/var/uploads/images/rooms
-chown -R nav /usr/local/nav/var/log
+chown -R nav /var/lib/nav/uploads/images/rooms
+chown -R nav /var/log/nav
 
 
 ##########################
