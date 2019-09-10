@@ -12,10 +12,6 @@ deb-src http://$REPO/debian jessie-updates main contrib non-free\n\
 \
 " > /etc/apt/sources.list
 
-# Need SASS to compile CSS files for web
-RUN apt-get update && apt-get -y install --no-install-recommends rubygems
-RUN gem install --version '3.3.9' sass
-
 # Unfortunately, we need heaps of stuff just to build the docs, since autodoc
 # requires Python imports to work. In other words, these requirements are
 # normally only needed for the runtime.
@@ -28,11 +24,8 @@ RUN apt-get update \
 
 # Build wheels from requirements so they can be re-used in a production image
 # without installing all the dev tools there too
-COPY nav/requirements/ /requirements
-COPY nav/requirements.txt /
-RUN pip wheel -w /wheelhouse -r /requirements.txt
-RUN pip install --no-index --find-links=/wheelhouse -r /requirements.txt
-
+RUN pip install --upgrade pip
+RUN mkdir /.cache && chmod 777 /.cache
 
 VOLUME  ["/source"]
 WORKDIR /source

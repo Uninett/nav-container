@@ -28,11 +28,17 @@ COPY .wheels/ /wheelhouse
 RUN pip install --no-index --find-links=/wheelhouse -r requirements.txt
 
 # Install NAV itself
-RUN adduser --system --group --no-create-home --home=/usr/local/nav --shell=/bin/bash nav
+RUN adduser --system --group --home=/usr/local/nav --shell=/bin/bash nav
 COPY .build/ /
-RUN chown -R nav /usr/local/nav
-RUN echo "import sys\nsys.path.extend(['/usr/local/nav/lib/python', '/usr/lib/python2.7/dist-packages'])" > /usr/local/lib/python2.7/sitecustomize.py
+RUN mkdir /etc/nav &&  chown nav /etc/nav && su nav -c 'nav config install /etc/nav'
+RUN mkdir /var/log/nav && chown nav /var/log/nav
+RUN mkdir -p /var/lib/nav/uploads/images/rooms && mkdir -p /var/lib/nav/htdocs/static && chown -R nav /var/lib/nav
 
+RUN mkdir -p /usr/local/share/nav/var && \
+    ln -s /var/lib/nav/uploads /usr/local/share/nav/var/uploads && \
+    mkdir -p /usr/local/share/nav/www && \
+    ln -s /var/lib/nav/htdocs/static /usr/local/share/nav/www/static && \
+    django-admin collectstatic --noinput --settings=nav.django.settings
 
 # Add Tini
 ENV TINI_VERSION v0.14.0
@@ -50,11 +56,10 @@ RUN a2dissite 000-default; a2ensite nav-site
 CMD ["/usr/bin/supervisord", "-n"]
 
 # Final environment
-ENV    PATH /usr/local/nav/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin
+ENV    PATH /usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin
 ENV    ADMIN_MAIL root@localhost
 ENV    DEFAULT_FROM_EMAIL nav@localhost
 ENV    DOMAIN_SUFFIX .example.org
 
-RUN    echo "PATH=$PATH" > /etc/profile.d/navpath.sh
-VOLUME ["/usr/local/nav/var/log", "/usr/local/nav/var/uploads/images/rooms"]
+VOLUME ["/var/log/nav", "/var/lib/nav/uploads/images/rooms"]
 EXPOSE 80
