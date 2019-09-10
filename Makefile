@@ -1,7 +1,7 @@
 REPO := mbrekkevold
 BUILDIMAGE := navbuild
 uid := $(shell id -u)
-nav_version := 4.9.7
+nav_version := 4.9.8
 
 .PHONY: navbuild nav carbon-cache graphite-web push
 

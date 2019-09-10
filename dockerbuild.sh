@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 # This script is designed to build NAV inside a docker container
-VERSION=4.9.2
+VERSION=4.9.8
 
 ORIG="$PWD"
 DESTDIR="$PWD/.build"
