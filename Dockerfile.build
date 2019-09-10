@@ -1,14 +1,14 @@
-FROM python:2.7-jessie
-ENV REPO ftp.no.debian.org
+FROM python:2.7-stretch
+ENV REPO deb.debian.org
 # We need source archives as well
 RUN echo "\n\
 \
-deb http://security.debian.org/ jessie/updates main\n\
-deb-src http://security.debian.org/ jessie/updates main\n\
-deb http://$REPO/debian jessie main contrib non-free\n\
-deb-src http://$REPO/debian jessie main contrib non-free\n\
-deb http://$REPO/debian jessie-updates main contrib non-free\n\
-deb-src http://$REPO/debian jessie-updates main contrib non-free\n\
+deb http://security.debian.org/ stretch/updates main\n\
+deb-src http://security.debian.org/ stretch/updates main\n\
+deb http://$REPO/debian stretch main contrib non-free\n\
+deb-src http://$REPO/debian stretch main contrib non-free\n\
+deb http://$REPO/debian stretch-updates main contrib non-free\n\
+deb-src http://$REPO/debian stretch-updates main contrib non-free\n\
 \
 " > /etc/apt/sources.list
 
