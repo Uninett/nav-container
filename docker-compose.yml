@@ -5,8 +5,8 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./data/log:/var/log/nav
-      - ./data/roomimages:/var/lib/nav/uploads/images/rooms
+      - logs:/var/log/nav
+      - roomimages:/var/lib/nav/uploads/images/rooms
     depends_on:
       - postgres
       - carbon-cache
@@ -26,12 +26,12 @@ services:
   postgres:
     image: "postgres:9.4"
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
 
   carbon-cache:
     build: ./carbon-cache
-    volumes_from:
-      - whisper
+    volumes:
+      - whisper:/var/lib/graphite/storage/whisper
 
   graphite-web:
     build: ./graphite-web
@@ -41,10 +41,15 @@ services:
     environment:
       - TIME_ZONE=Europe/Oslo
       - CARBONLINK_HOSTS=carbon-cache:7002
-    volumes_from:
-      - whisper
-
-  whisper:
-    image: busybox
     volumes:
-      - ./data/whisper:/var/lib/graphite/storage/whisper
+      - whisper:/var/lib/graphite/storage/whisper
+
+volumes:
+  whisper:
+    driver: local
+  postgres:
+    driver: local
+  logs:
+    driver: local
+  roomimages:
+    driver: local
