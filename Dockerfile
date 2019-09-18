@@ -55,6 +55,9 @@ RUN a2dissite 000-default; a2ensite nav-site
 # Run all NAV processes in one container by default
 CMD ["/usr/bin/supervisord", "-n"]
 
+# Create symlink for syslog
+RUN ln -s /var/log/syslog/cisco.log /var/log/cisco.log
+
 # Final environment
 ENV    PATH /usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin
 ENV    ADMIN_MAIL root@localhost
