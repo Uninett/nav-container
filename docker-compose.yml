@@ -43,7 +43,7 @@ services:
       - TIME_ZONE=Europe/Oslo
       - CARBONLINK_HOSTS=carbon-cache:7002
     volumes:
-      - whisper:/var/lib/graphite/storage/whisper
+      - whisper:/var/lib/graphite/storage/whisper:z
 
 volumes:
   whisper:
