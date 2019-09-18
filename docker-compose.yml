@@ -44,18 +44,6 @@ services:
       - CARBONLINK_HOSTS=carbon-cache:7002
     volumes:
       - whisper:/var/lib/graphite/storage/whisper:z
-      
-  syslog-ng:
-    build: 
-      context: . 
-      dockerfile: Dockerfile.syslog-ng
-    image: balabit/syslog-ng:latest
-    ports:
-     - 514:514/udp
-     - 601:601
-    volumes:
-      - syslog-ng-logs:/var/log/syslog:z
-
 
 volumes:
   whisper:
