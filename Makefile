@@ -9,7 +9,7 @@ all: navbuild nav carbon-cache graphite-web
 
 navbuild:
 	docker build -f Dockerfile.build -t "$(BUILDIMAGE)" .
-	docker run -ti --rm -v "$(CURDIR):/source:z" -v "$(HOME)/.cache/pip:/.cache/pip:z" --cap-drop=all -u "$(uid)" "$(BUILDIMAGE)"
+	docker run -ti --rm -v "$(CURDIR):/source:Z" -v "$(HOME)/.cache/pip:/.cache/pip:Z" --cap-drop=all -u "$(uid)" "$(BUILDIMAGE)"
 
 nav:
 	docker build -t $(REPO)/nav .
