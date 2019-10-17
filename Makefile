@@ -18,8 +18,8 @@ nav:
 carbon-cache/storage-schemas.conf: nav/python/nav/etc/graphite/storage-schemas.conf
 	cp nav/python/nav/etc/graphite/storage-schemas.conf carbon-cache/
 
-carbon-cache/storage-aggregation.conf: nav/python/nav//etc/graphite/storage-aggregation.conf
-	cp nav/python/nav//etc/graphite/storage-aggregation.conf carbon-cache/
+carbon-cache/storage-aggregation.conf: nav/python/nav/etc/graphite/storage-aggregation.conf
+	cp nav/python/nav/etc/graphite/storage-aggregation.conf carbon-cache/
 
 carbon-cache: carbon-cache/storage-schemas.conf carbon-cache/storage-aggregation.conf
 	docker build -t $(REPO)/nav-carbon-cache carbon-cache
@@ -27,8 +27,12 @@ carbon-cache: carbon-cache/storage-schemas.conf carbon-cache/storage-aggregation
 graphite-web:
 	graphite-web; docker build -t $(REPO)/graphite-web graphite-web
 
-push:
-	docker push $(REPO)/nav:latest
-	docker push $(REPO)/nav:$(nav_version)
-	docker push $(REPO)/nav-carbon-cache
-	docker push $(REPO)/graphite-web
+syslog-ng:
+	docker build -t $(REPO)/syslog-ng syslog-ng
+
+#push:
+#	docker push $(REPO)/nav:latest
+#	docker push $(REPO)/nav:$(nav_version)
+#	docker push $(REPO)/nav-carbon-cache
+#	docker push $(REPO)/graphite-web
+#	docker push $(REPO)/syslog-ng
