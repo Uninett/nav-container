@@ -1,4 +1,4 @@
-FROM python:2.7-stretch
+FROM python:3.5-stretch
 LABEL maintainer="Morten Brekkevold <morten.brekkevold@uninett.no>"
 
 RUN apt-get update \
@@ -9,11 +9,11 @@ RUN apt-get update \
        sudo \
        pwgen \
        apache2 \
-       libapache2-mod-wsgi \
+       libapache2-mod-wsgi-py3 \
        nbtscan \
        libpq5 \
        postgresql-client \
-       python-gammu
+       python3-gammu
 
 # possibly want these packages for debugging inside the container:
 #       vim \
@@ -25,7 +25,7 @@ RUN apt-get update \
 COPY nav/requirements/ /requirements
 COPY nav/requirements.txt /
 COPY .wheels/ /wheelhouse
-RUN pip install --no-index --find-links=/wheelhouse -r requirements.txt
+RUN pip3 install --no-index --find-links=/wheelhouse -r requirements.txt
 
 # Install NAV itself
 RUN adduser --system --group --home=/usr/local/nav --shell=/bin/bash nav

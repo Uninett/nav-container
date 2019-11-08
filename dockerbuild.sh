@@ -23,10 +23,10 @@ fi
 
 # Build wheel from Python deps
 mkdir -p .wheels
-pip wheel -w ./.wheels/ -r nav/requirements.txt
+pip3 wheel -w ./.wheels/ -r nav/requirements.txt
 
 #TODO: Install those wheels and build the NAV documentation
 #pip install --no-index --find-links=./.wheels -r nav/requirements.txt
 
 # Install NAV
-pip install --root="$DESTDIR" ./nav
+pip3 install --root="$DESTDIR" ./nav
