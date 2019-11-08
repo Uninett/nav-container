@@ -13,6 +13,7 @@ rm -rf "$DESTDIR"; mkdir -p "$DESTDIR"
 # Clone or update existing nav working copy
 if [ -d nav ]; then
     cd nav
+    git fetch origin
     git checkout $VERSION
     cd ..
 else
