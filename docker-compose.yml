@@ -1,10 +1,9 @@
-version: '3.5'
+version: '2'
 services:
   nav:
     build: .
     ports:
       - "80:80"
-      - "162:162/udp"
     volumes:
       - logs:/var/log/nav:Z
       - roomimages:/var/lib/nav/uploads/images/rooms:Z
@@ -24,19 +23,16 @@ services:
       - NOINITDB=0
     env_file:
       - nav-variables.env
-    restart: always
 
   postgres:
     image: "postgres:12"
     volumes:
       - postgres:/var/lib/postgresql/data:Z
-    restart: always
 
   carbon-cache:
     build: ./carbon-cache
     volumes:
       - whisper:/var/lib/graphite/storage/whisper:z
-    restart: always
 
   graphite-web:
     build: ./graphite-web
@@ -48,7 +44,6 @@ services:
       - CARBONLINK_HOSTS=carbon-cache:7002
     volumes:
       - whisper:/var/lib/graphite/storage/whisper:z
-    restart: always
 
 volumes:
   whisper:
