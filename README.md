@@ -7,11 +7,10 @@ deploying on Kubernetes.
 
 ## How to build and run
 
-These commands should be sufficient to get things up and running using Docker
+This command should be sufficient to get things up and running using Docker
 Compose:
 
 ```
-make
 docker-compose up
 ```
 

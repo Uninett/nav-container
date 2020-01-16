@@ -1,3 +1,5 @@
+# This Makefile is now only intended for building, tagging and uploading the
+# images used by docker-compose.yml to the Dockerhub
 REPO := mbrekkevold
 uid := $(shell id -u)
 nav_version := 5.0.4
