@@ -1,15 +1,10 @@
 REPO := mbrekkevold
-BUILDIMAGE := navbuild
 uid := $(shell id -u)
 nav_version := 5.0.4
 
 .PHONY: navbuild nav carbon-cache graphite-web push
 
-all: navbuild nav carbon-cache graphite-web
-
-navbuild:
-	docker build -f Dockerfile.build -t "$(BUILDIMAGE)" .
-	docker run --rm -v "$(CURDIR):/source:Z" -v "$(HOME)/.cache/pip:/.cache/pip:Z" --cap-drop=all -u "$(uid)" "$(BUILDIMAGE)"
+all: nav carbon-cache graphite-web
 
 nav:
 	docker build -t $(REPO)/nav .
