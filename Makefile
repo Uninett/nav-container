@@ -10,13 +10,7 @@ nav:
 	docker build -t $(REPO)/nav .
 	docker tag $(REPO)/nav:latest $(REPO)/nav:$(nav_version)
 
-carbon-cache/storage-schemas.conf: nav/python/nav/etc/graphite/storage-schemas.conf
-	cp nav/python/nav/etc/graphite/storage-schemas.conf carbon-cache/
-
-carbon-cache/storage-aggregation.conf: nav/python/nav//etc/graphite/storage-aggregation.conf
-	cp nav/python/nav//etc/graphite/storage-aggregation.conf carbon-cache/
-
-carbon-cache: carbon-cache/storage-schemas.conf carbon-cache/storage-aggregation.conf
+carbon-cache:
 	docker build -t $(REPO)/nav-carbon-cache carbon-cache
 
 graphite-web:
