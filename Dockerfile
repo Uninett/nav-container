@@ -1,5 +1,4 @@
 FROM python:3.5-stretch AS builder
-ENV VERSION=5.0.4
 ENV REPO deb.debian.org
 ENV GIT_COMMITTER_NAME Dummy
 ENV GIT_COMMITTER_EMAIL dummy@example.org
@@ -32,14 +31,14 @@ RUN mkdir /.cache && chmod 777 /.cache
 
 RUN mkdir /source
 WORKDIR /source
-RUN git clone https://github.com/Uninett/nav.git nav --branch $VERSION --depth 1
+ARG NAV_VERSION
+RUN git clone https://github.com/Uninett/nav.git nav --branch ${NAV_VERSION} --depth 1
 RUN mkdir -p .wheels
 RUN pip3 wheel -w ./.wheels/ -r nav/requirements.txt
 RUN pip3 install --root="/source/.build" ./nav
 
-
+# Now, build the actual installation stage
 FROM python:3.5-stretch
-LABEL maintainer="Morten Brekkevold <morten.brekkevold@uninett.no>"
 
 # Start by adding Tini
 ENV TINI_VERSION v0.14.0
@@ -65,6 +64,10 @@ RUN apt-get update \
 #       vim \
 #       less \
 
+
+ARG NAV_VERSION
+LABEL maintainer="Morten Brekkevold <morten.brekkevold@uninett.no>"
+LABEL description="Network Administration Visualized ${NAV_VERSION}"
 
 # Install python module dependencies, assuming they have already been made
 # available as wheels

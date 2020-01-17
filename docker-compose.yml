@@ -1,7 +1,10 @@
 version: '2'
 services:
   nav:
-    build: .
+    build:
+      context: .
+      args:
+        NAV_VERSION: 5.0.4
     ports:
       - "80:80"
     volumes:

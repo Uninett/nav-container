@@ -9,7 +9,7 @@ nav_version := 5.0.4
 all: nav carbon-cache graphite-web
 
 nav:
-	docker build -t $(REPO)/nav .
+	docker build --build-arg NAV_VERSION=$(nav_version) -t $(REPO)/nav .
 	docker tag $(REPO)/nav:latest $(REPO)/nav:$(nav_version)
 
 carbon-cache:
