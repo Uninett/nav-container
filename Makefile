@@ -16,7 +16,7 @@ carbon-cache:
 	docker build -t $(REPO)/nav-carbon-cache carbon-cache
 
 graphite-web:
-	graphite-web; docker build -t $(REPO)/graphite-web graphite-web
+	docker build -t $(REPO)/graphite-web graphite-web
 
 push:
 	docker push $(REPO)/nav:latest
