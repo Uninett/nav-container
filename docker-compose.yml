@@ -23,16 +23,19 @@ services:
       - NOINITDB=0
     env_file:
       - nav-variables.env
+    restart: always
 
   postgres:
     image: "postgres:9.4"
     volumes:
       - postgres:/var/lib/postgresql/data:Z
+    restart: always
 
   carbon-cache:
     build: ./carbon-cache
     volumes:
       - whisper:/var/lib/graphite/storage/whisper:z
+    restart: always
 
   graphite-web:
     build: ./graphite-web
@@ -44,6 +47,7 @@ services:
       - CARBONLINK_HOSTS=carbon-cache:7002
     volumes:
       - whisper:/var/lib/graphite/storage/whisper:z
+    restart: always
 
 volumes:
   whisper:
