@@ -23,7 +23,7 @@ RUN apt-get update \
 # Install python module dependencies, assuming they have already been made
 # available as wheels
 COPY nav/requirements/ /requirements
-COPY nav/requirements.txt /
+COPY nav/requirements.txt database.sq[l] /
 COPY .wheels/ /wheelhouse
 RUN pip3 install --no-index --find-links=/wheelhouse -r requirements.txt
 
