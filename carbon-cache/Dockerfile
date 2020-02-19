@@ -19,8 +19,8 @@ RUN pip install carbon --install-option="--install-scripts=/usr/local/bin" --ins
 
 # Basic configuration and permissions
 COPY carbon.conf ${GRAPHITE_CONF_DIR}/carbon.conf
-COPY storage-schemas.conf ${GRAPHITE_CONF_DIR}/storage-schemas.conf
-COPY storage-aggregation.conf ${GRAPHITE_CONF_DIR}/storage-aggregation.conf
+COPY --from=mbrekkevold/nav:latest /etc/nav/graphite/storage-schemas.conf ${GRAPHITE_CONF_DIR}/storage-schemas.conf
+COPY --from=mbrekkevold/nav:latest /etc/nav/graphite/storage-aggregation.conf ${GRAPHITE_CONF_DIR}/storage-aggregation.conf
 
 RUN chown -R graphite:graphite /var/lib/graphite
 

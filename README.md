@@ -7,17 +7,27 @@ deploying on Kubernetes.
 
 ## How to build and run
 
-These commands should be sufficient to get things up and running using Docker
+This command should be sufficient to get things up and running using Docker
 Compose:
 
 ```
-make
 docker-compose up
 ```
 
 This should bring up various containers, for NAV, PostgreSQL and Graphite.
 These will have various data and log directories mounted under the `data/`
 directory.
+
+### Building a specific version
+
+The repository is usually updated to use the latest available NAV version, but
+you can explicitly build a specific NAV version by adding a build argument,
+like this:
+
+```
+docker-compose build --build-arg NAV_VERSION=5.0.4 nav
+docker-compose up
+```
 
 ## How it's organized
 

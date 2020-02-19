@@ -1,31 +1,22 @@
+# This Makefile is now only intended for building, tagging and uploading the
+# images used by docker-compose.yml to the Dockerhub
 REPO := mbrekkevold
-BUILDIMAGE := navbuild
 uid := $(shell id -u)
 nav_version := 5.0.4
 
 .PHONY: navbuild nav carbon-cache graphite-web push
 
-all: navbuild nav carbon-cache graphite-web
-
-navbuild:
-	docker build -f Dockerfile.build -t "$(BUILDIMAGE)" .
-	docker run --rm -v "$(CURDIR):/source:Z" -v "$(HOME)/.cache/pip:/.cache/pip:Z" --cap-drop=all -u "$(uid)" "$(BUILDIMAGE)"
+all: nav carbon-cache graphite-web
 
 nav:
-	docker build -t $(REPO)/nav .
+	docker build --build-arg NAV_VERSION=$(nav_version) -t $(REPO)/nav .
 	docker tag $(REPO)/nav:latest $(REPO)/nav:$(nav_version)
 
-carbon-cache/storage-schemas.conf: nav/python/nav/etc/graphite/storage-schemas.conf
-	cp nav/python/nav/etc/graphite/storage-schemas.conf carbon-cache/
-
-carbon-cache/storage-aggregation.conf: nav/python/nav//etc/graphite/storage-aggregation.conf
-	cp nav/python/nav//etc/graphite/storage-aggregation.conf carbon-cache/
-
-carbon-cache: carbon-cache/storage-schemas.conf carbon-cache/storage-aggregation.conf
+carbon-cache:
 	docker build -t $(REPO)/nav-carbon-cache carbon-cache
 
 graphite-web:
-	graphite-web; docker build -t $(REPO)/graphite-web graphite-web
+	docker build -t $(REPO)/graphite-web graphite-web
 
 push:
 	docker push $(REPO)/nav:latest
