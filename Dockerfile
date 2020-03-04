@@ -12,12 +12,15 @@ RUN apt-get update \
        libapache2-mod-wsgi-py3 \
        nbtscan \
        libpq5 \
-       postgresql-client \
        python3-gammu
 
-# possibly want these packages for debugging inside the container:
-#       vim \
-#       less \
+# As Debian has no postgres-12 client, fetch it from Postgresql.org instead
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
+RUN wget  https://www.postgresql.org/media/keys/ACCC4CF8.asc -O /tmp/ACCC4CF8.asc \
+	&& apt-key add /tmp/ACCC4CF8.asc \
+	&& apt-get update \ 
+	&& apt-get -y install postgresql-client-12 \
+	&& rm /tmp/ACCC4CF8.asc
 
 
 # Install python module dependencies, assuming they have already been made
