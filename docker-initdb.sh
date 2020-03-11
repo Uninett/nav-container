@@ -27,7 +27,7 @@ EOF
 
 if [ "${NOINITDB}" -eq 0 ]; then
    export PGHOST="$HOST"
-   export PGUSER="postgres"
+   export PGUSER="$USER"
    export PGDATABASE="$DB"
    export PGPORT="$PORT"
    export PGPASSWORD="$PASSWORD"

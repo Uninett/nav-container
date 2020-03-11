@@ -20,6 +20,7 @@ services:
       - PGHOST=postgres
       - PGDATABASE=nav
       - PGUSER=nav
+      - PGPASSWORD=s3cret
       - PGPORT=5432
       - CARBONHOST=carbon-cache
       - CARBONPORT=2003
@@ -33,6 +34,11 @@ services:
     image: "postgres:12"
     volumes:
       - postgres:/var/lib/postgresql/data:Z
+    # The following vars are documented at https://hub.docker.com/_/postgres
+    environment:
+      - POSTGRES_PASSWORD=s3cret
+      - POSTGRES_USER=nav
+      - POSTGRES_DB=nav
     restart: always
 
   carbon-cache:
