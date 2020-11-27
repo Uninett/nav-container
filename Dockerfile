@@ -1,16 +1,16 @@
-FROM python:3.5-stretch AS builder
+FROM python:3.7-buster AS builder
 ENV REPO deb.debian.org
 ENV GIT_COMMITTER_NAME Dummy
 ENV GIT_COMMITTER_EMAIL dummy@example.org
 # We need source archives as well
 RUN echo "\n\
 \
-deb http://security.debian.org/ stretch/updates main\n\
-deb-src http://security.debian.org/ stretch/updates main\n\
-deb http://$REPO/debian stretch main contrib non-free\n\
-deb-src http://$REPO/debian stretch main contrib non-free\n\
-deb http://$REPO/debian stretch-updates main contrib non-free\n\
-deb-src http://$REPO/debian stretch-updates main contrib non-free\n\
+deb http://security.debian.org/ buster/updates main\n\
+deb-src http://security.debian.org/ buster/updates main\n\
+deb http://$REPO/debian buster main contrib non-free\n\
+deb-src http://$REPO/debian buster main contrib non-free\n\
+deb http://$REPO/debian buster-updates main contrib non-free\n\
+deb-src http://$REPO/debian buster-updates main contrib non-free\n\
 \
 " > /etc/apt/sources.list
 
@@ -21,8 +21,8 @@ RUN apt-get update \
     && apt-get -y --no-install-recommends build-dep \
        python3-psycopg2 \
        python3-lxml \
-       python-imaging \
-       python-ldap
+       python3-pil \
+       python3-ldap
 
 # Build wheels from requirements so they can be re-used in a production image
 # without installing all the dev tools there too
@@ -38,7 +38,7 @@ RUN pip3 wheel -w ./.wheels/ -r nav/requirements.txt
 RUN pip3 install --root="/source/.build" ./nav
 
 # Now, build the actual installation stage
-FROM python:3.5-stretch
+FROM python:3.7-buster
 
 # Start by adding Tini
 ENV TINI_VERSION v0.14.0
@@ -60,7 +60,7 @@ RUN apt-get update \
        python3-gammu
 
 # As Debian has no postgres-12 client, fetch it from Postgresql.org instead
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
 RUN wget  https://www.postgresql.org/media/keys/ACCC4CF8.asc -O /tmp/ACCC4CF8.asc \
 	&& apt-key add /tmp/ACCC4CF8.asc \
 	&& apt-get update \ 
