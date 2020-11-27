@@ -40,14 +40,9 @@ RUN pip3 install --root="/source/.build" ./nav
 # Now, build the actual installation stage
 FROM python:3.7-buster
 
-# Start by adding Tini
-ENV TINI_VERSION v0.14.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-RUN chmod +x /tini
-ENTRYPOINT ["/tini", "--", "/docker-entrypoint.sh"]
-
 RUN apt-get update \
     && apt-get -y --no-install-recommends install \
+       tini \
        supervisor \
        libsnmp30 \
        cron \
@@ -58,6 +53,9 @@ RUN apt-get update \
        nbtscan \
        libpq5 \
        python3-gammu
+
+# Use tini as our image init process
+ENTRYPOINT ["/usr/bin/tini", "--", "/docker-entrypoint.sh"]
 
 # As Debian has no postgres-12 client, fetch it from Postgresql.org instead
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
