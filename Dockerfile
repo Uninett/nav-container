@@ -1,16 +1,16 @@
-FROM python:3.7-buster AS builder
+FROM python:3.9-slim-bullseye AS builder
 ENV REPO deb.debian.org
 ENV GIT_COMMITTER_NAME Dummy
 ENV GIT_COMMITTER_EMAIL dummy@example.org
 # We need source archives as well
 RUN echo "\n\
 \
-deb http://security.debian.org/ buster/updates main\n\
-deb-src http://security.debian.org/ buster/updates main\n\
-deb http://$REPO/debian buster main contrib non-free\n\
-deb-src http://$REPO/debian buster main contrib non-free\n\
-deb http://$REPO/debian buster-updates main contrib non-free\n\
-deb-src http://$REPO/debian buster-updates main contrib non-free\n\
+#deb http://security.debian.org/ bullseye/updates main\n\
+#deb-src http://security.debian.org/ bullseye/updates main\n\
+deb http://$REPO/debian bullseye main contrib non-free\n\
+deb-src http://$REPO/debian bullseye main contrib non-free\n\
+deb http://$REPO/debian bullseye-updates main contrib non-free\n\
+deb-src http://$REPO/debian bullseye-updates main contrib non-free\n\
 \
 " > /etc/apt/sources.list
 
@@ -23,6 +23,8 @@ RUN apt-get update \
        python3-lxml \
        python3-pil \
        python3-ldap
+
+RUN apt-get install -y git
 
 # Build wheels from requirements so they can be re-used in a production image
 # without installing all the dev tools there too
@@ -38,13 +40,14 @@ RUN pip3 wheel -w ./.wheels/ -r nav/requirements.txt
 RUN pip3 install --root="/source/.build" ./nav
 
 # Now, build the actual installation stage
-FROM python:3.7-buster
+
+FROM python:3.9-slim-bullseye
 
 RUN apt-get update \
     && apt-get -y --no-install-recommends install \
        tini \
        supervisor \
-       libsnmp30 \
+       libsnmp40 \
        cron \
        sudo \
        pwgen \
@@ -52,17 +55,19 @@ RUN apt-get update \
        libapache2-mod-wsgi-py3 \
        nbtscan \
        libpq5 \
-       python3-gammu
+       wget \
+       gnupg \
+       git
 
 # Use tini as our image init process
 ENTRYPOINT ["/usr/bin/tini", "--", "/docker-entrypoint.sh"]
 
 # As Debian has no postgres-12 client, fetch it from Postgresql.org instead
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ bullseye-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
 RUN wget  https://www.postgresql.org/media/keys/ACCC4CF8.asc -O /tmp/ACCC4CF8.asc \
 	&& apt-key add /tmp/ACCC4CF8.asc \
 	&& apt-get update \ 
-	&& apt-get -y install postgresql-client-12 \
+	&& apt-get -y install postgresql-client-15 \
 	&& rm /tmp/ACCC4CF8.asc
 
 
