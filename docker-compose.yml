@@ -43,7 +43,7 @@ services:
   carbon-cache:
     build: ./carbon-cache
     volumes:
-      - whisper:/var/lib/graphite/storage/whisper:z
+      - whisper:/var/lib/graphite/whisper:z
     restart: always
 
   graphite-web:
