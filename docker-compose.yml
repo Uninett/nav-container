@@ -4,7 +4,7 @@ services:
     build:
       context: .
       args:
-        NAV_VERSION: 5.5.2
+        NAV_VERSION: 5.6.0
     ports:
       - "80:80"
       - "162:162/udp"
@@ -43,7 +43,7 @@ services:
   carbon-cache:
     build: ./carbon-cache
     volumes:
-      - whisper:/var/lib/graphite/storage/whisper:z
+      - whisper:/var/lib/graphite/whisper:z
     restart: always
 
   graphite-web:
