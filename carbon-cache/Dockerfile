@@ -1,4 +1,4 @@
-FROM debian:bullseye
+FROM debian:bullseye-slim
 LABEL description="A carbon-cache instance configured explicitly for use with NAV"
 LABEL maintainer="Morten Brekkevold <morten.brekkevold@sikt.no>"
 
