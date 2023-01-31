@@ -30,7 +30,7 @@ services:
     restart: always
 
   postgres:
-    image: "postgres:12"
+    image: "docker.io/postgres:12"
     volumes:
       - postgres:/var/lib/postgresql/data:Z
     # The following vars are documented at https://hub.docker.com/_/postgres
