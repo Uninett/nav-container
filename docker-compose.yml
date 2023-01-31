@@ -4,7 +4,7 @@ services:
     build:
       context: .
       args:
-        NAV_VERSION: 5.5.2
+        NAV_VERSION: 5.6.0
     ports:
       - "80:80"
       - "162:162/udp"
@@ -30,7 +30,7 @@ services:
     restart: always
 
   postgres:
-    image: "postgres:12"
+    image: "docker.io/postgres:14"
     volumes:
       - postgres:/var/lib/postgresql/data:Z
     # The following vars are documented at https://hub.docker.com/_/postgres
