@@ -1,4 +1,4 @@
-FROM python:3.9-bullseye AS builder
+FROM python:3.9-slim-bullseye AS builder
 ENV REPO deb.debian.org
 ENV GIT_COMMITTER_NAME Dummy
 ENV GIT_COMMITTER_EMAIL dummy@example.org
@@ -29,6 +29,11 @@ RUN apt-get update \
     && apt-get -y install \
        libgammu-dev
 
+# No git in slim image
+RUN apt-get update \
+    && apt-get -y install \
+       git
+
 # Build wheels from requirements so they can be re-used in a production image
 # without installing all the dev tools there too
 RUN pip3 install --upgrade pip
@@ -43,7 +48,7 @@ RUN pip3 wheel -w ./.wheels/ -r nav/requirements.txt python-gammu==3.2.4
 RUN pip3 install --root="/source/.build" ./nav
 
 # Now, build the actual installation stage
-FROM python:3.9-bullseye
+FROM python:3.9-slim-bullseye
 
 RUN apt-get update \
     && apt-get -y --no-install-recommends install \
@@ -56,15 +61,14 @@ RUN apt-get update \
        apache2 \
        libapache2-mod-wsgi-py3 \
        nbtscan \
-       libpq5
-
+       libpq5 \
+       git \
+       gpg \
+       postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
 
 # Use tini as our image init process
 ENTRYPOINT ["/usr/bin/tini", "--", "/docker-entrypoint.sh"]
-
-# Install a PostgreSQL client
-RUN apt-get update \
-    && apt-get -y install postgresql-client
 
 ARG NAV_VERSION
 LABEL maintainer="Morten Brekkevold <morten.brekkevold@sikt.no>"

@@ -1,4 +1,4 @@
-FROM debian:bullseye
+FROM debian:bullseye-slim
 LABEL description="A graphite-web instance for NAV"
 LABEL maintainer="Morten Brekkevold <morten.brekkevold@sikt.no>"
 
