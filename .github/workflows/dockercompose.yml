@@ -1,0 +1,34 @@
+name: Build docker-compose dev environment
+on:
+  schedule:
+    - cron: '6 6 * * *'
+  push:
+    branches: master
+  pull_request:
+
+jobs:
+  build-docker-compose:
+    name: "Build docker-compose-based development environment"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: docker-compose build
+        run: |
+          docker-compose build
+
+      - name: Verify containers stay running at least 1 minute
+        run: |
+          docker-compose up -d
+          sleep 60
+          docker-compose ps
+          echo "Verifying service states"
+          docker-compose ps -q | xargs docker inspect -f '{{.State.Running}}' | grep -q false && exit 1
+          echo "Looks ok"
+
+      - name: Print docker-compose logs
+        if: failure()
+        run: |
+          docker-compose logs
