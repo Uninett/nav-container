@@ -25,7 +25,7 @@ you can explicitly build a specific NAV version by adding a build argument,
 like this:
 
 ```
-docker-compose build --build-arg NAV_VERSION=5.0.4 nav
+docker-compose build --build-arg NAV_VERSION=5.8.2 nav
 docker-compose up
 ```
 
