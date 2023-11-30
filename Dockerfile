@@ -44,8 +44,8 @@ WORKDIR /source
 ARG NAV_VERSION
 RUN git clone https://github.com/Uninett/nav.git nav --branch ${NAV_VERSION} --depth 1
 RUN mkdir -p .wheels
-RUN pip3 wheel -w ./.wheels/ -r nav/requirements.txt -c nav/constraints.txt python-gammu==3.2.4
-RUN pip3 install --root="/source/.build" ./nav
+RUN --mount=type=cache,target=/root/.cache/pip pip3 wheel -w ./.wheels/ -r nav/requirements.txt -c nav/constraints.txt python-gammu==3.2.4
+RUN --mount=type=cache,target=/root/.cache/pip pip3 install --root="/source/.build" ./nav
 
 # Now, build the actual installation stage
 FROM python:3.9-slim-bullseye
@@ -80,7 +80,7 @@ COPY --from=builder /source/nav/requirements/ /requirements
 COPY --from=builder /source/nav/requirements.txt /
 COPY --from=builder /source/nav/constraints.txt /
 COPY --from=builder /source/.wheels/ /wheelhouse
-RUN pip3 install --no-index --find-links=/wheelhouse -r requirements.txt -c constraints.txt
+RUN --mount=type=cache,target=/root/.cache/pip pip3 install --no-index --find-links=/wheelhouse -r requirements.txt -c constraints.txt
 
 # Install NAV itself
 RUN adduser --system --group --home=/usr/local/nav --shell=/bin/bash nav
