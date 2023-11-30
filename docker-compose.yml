@@ -4,7 +4,7 @@ services:
     build:
       context: .
       args:
-        NAV_VERSION: 5.6.0
+        NAV_VERSION: 5.8.2
     ports:
       - "80:80"
       - "162:162/udp"
