@@ -1,17 +1,16 @@
-FROM python:3.9-slim-bullseye AS builder
+FROM python:3.11-slim-bookworm AS builder
 ENV REPO=deb.debian.org
 ENV GIT_COMMITTER_NAME=Dummy
 ENV GIT_COMMITTER_EMAIL=dummy@example.org
 # We need source archives as well
 RUN echo "\n\
 \
-deb http://security.debian.org/ bullseye-security main contrib non-free\n\
-deb-src http://security.debian.org/ bullseye-security main contrib non-free\n\
-deb http://$REPO/debian bullseye main contrib non-free\n\
-deb-src http://$REPO/debian bullseye main contrib non-free\n\
-deb http://$REPO/debian bullseye-updates main contrib non-free\n\
-deb-src http://$REPO/debian bullseye-updates main contrib non-free\n\
-deb http://deb.debian.org/debian bullseye-backports main contrib non-free\n\
+deb http://security.debian.org/ bookworm-security main contrib non-free\n\
+deb-src http://security.debian.org/ bookworm-security main contrib non-free\n\
+deb http://$REPO/debian bookworm main contrib non-free\n\
+deb-src http://$REPO/debian bookworm main contrib non-free\n\
+deb http://$REPO/debian bookworm-updates main contrib non-free\n\
+deb-src http://$REPO/debian bookworm-updates main contrib non-free\n\
 " > /etc/apt/sources.list
 
 # Unfortunately, we need heaps of stuff just to build the docs, since autodoc
@@ -48,7 +47,7 @@ RUN --mount=type=cache,target=/root/.cache/pip pip3 wheel -w ./.wheels/ -r nav/r
 RUN --mount=type=cache,target=/root/.cache/pip pip3 install --root="/source/.build" ./nav
 
 # Now, build the actual installation stage
-FROM python:3.9-slim-bullseye
+FROM python:3.11-slim-bookworm
 
 RUN apt-get update \
     && apt-get -y --no-install-recommends install \
