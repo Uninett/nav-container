@@ -36,7 +36,9 @@ RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
        # Enable us to build the python-gammu module \
        libgammu-dev \
        # No git in slim image \
-       git
+       git \
+       # Need NodeJS/npm to build static web resources \
+       npm
 
 # Build wheels from requirements so they can be re-used in a production image
 # without installing all the dev tools there too
@@ -49,6 +51,7 @@ ARG NAV_VERSION
 RUN git clone https://github.com/Uninett/nav.git nav --branch ${NAV_VERSION} --depth 1
 RUN mkdir -p .wheels
 RUN --mount=type=cache,target=/root/.cache/pip pip3 wheel -w ./.wheels/ -r nav/requirements.txt -c nav/constraints.txt python-gammu==3.2.4
+RUN cd ./nav; make sassbuild
 RUN --mount=type=cache,target=/root/.cache/pip pip3 install --root="/source/.build" ./nav
 
 # Now, build the actual installation stage
