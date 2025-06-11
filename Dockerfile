@@ -1,7 +1,7 @@
 FROM python:3.9-slim-bullseye AS builder
-ENV REPO deb.debian.org
-ENV GIT_COMMITTER_NAME Dummy
-ENV GIT_COMMITTER_EMAIL dummy@example.org
+ENV REPO=deb.debian.org
+ENV GIT_COMMITTER_NAME=Dummy
+ENV GIT_COMMITTER_EMAIL=dummy@example.org
 # We need source archives as well
 RUN echo "\n\
 \
@@ -105,10 +105,10 @@ RUN a2dissite 000-default; a2ensite nav-site
 CMD ["/usr/bin/supervisord", "-n"]
 
 # Final environment
-ENV    PATH /usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin
-ENV    ADMIN_MAIL root@localhost
-ENV    DEFAULT_FROM_EMAIL nav@localhost
-ENV    DOMAIN_SUFFIX .example.org
+ENV    PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin
+ENV    ADMIN_MAIL=root@localhost
+ENV    DEFAULT_FROM_EMAIL=nav@localhost
+ENV    DOMAIN_SUFFIX=.example.org
 
 VOLUME ["/var/log/nav", "/var/lib/nav/uploads/images/rooms"]
 EXPOSE 80
