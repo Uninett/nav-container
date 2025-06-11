@@ -54,7 +54,9 @@ RUN --mount=type=cache,target=/root/.cache/pip pip3 wheel -w ./.wheels/ -r nav/r
 RUN cd ./nav; make sassbuild
 RUN --mount=type=cache,target=/root/.cache/pip pip3 install --root="/source/.build" ./nav
 
-# Now, build the actual installation stage
+############################################
+# Now, build the actual installation stage #
+############################################
 FROM python:3.11-slim-bookworm
 
 # We're using mount caches, so don't clean the apt cache after every apt command!
