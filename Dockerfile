@@ -13,10 +13,15 @@ deb http://$REPO/debian bookworm-updates main contrib non-free\n\
 deb-src http://$REPO/debian bookworm-updates main contrib non-free\n\
 " > /etc/apt/sources.list
 
+# We're using mount caches, so don't clean the apt cache after every apt command!
+RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
+
 # Unfortunately, we need heaps of stuff just to build the docs, since autodoc
 # requires Python imports to work. In other words, these requirements are
 # normally only needed for the runtime.
-RUN apt-get update \
+RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
+    --mount=target=/var/cache/apt,type=cache,sharing=locked \
+    apt-get update \
     && apt-get -y --no-install-recommends build-dep \
        python3-psycopg2 \
        python3-lxml \
@@ -24,13 +29,13 @@ RUN apt-get update \
        python3-ldap
 
 # Enable us to build the python-gammu module:
-RUN apt-get update \
+RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
+    --mount=target=/var/cache/apt,type=cache,sharing=locked \
+    apt-get update \
     && apt-get -y install \
-       libgammu-dev
-
-# No git in slim image
-RUN apt-get update \
-    && apt-get -y install \
+       # Enable us to build the python-gammu module \
+       libgammu-dev \
+       # No git in slim image \
        git
 
 # Build wheels from requirements so they can be re-used in a production image
@@ -49,7 +54,12 @@ RUN --mount=type=cache,target=/root/.cache/pip pip3 install --root="/source/.bui
 # Now, build the actual installation stage
 FROM python:3.11-slim-bookworm
 
-RUN apt-get update \
+# We're using mount caches, so don't clean the apt cache after every apt command!
+RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
+
+RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
+    --mount=target=/var/cache/apt,type=cache,sharing=locked \
+    apt-get update \
     && apt-get -y --no-install-recommends install \
        tini \
        supervisor \
@@ -63,8 +73,8 @@ RUN apt-get update \
        libpq5 \
        git \
        gpg \
-       postgresql-client \
-    && rm -rf /var/lib/apt/lists/*
+       postgresql-client
+
 
 # Use tini as our image init process
 ENTRYPOINT ["/usr/bin/tini", "--", "/docker-entrypoint.sh"]
