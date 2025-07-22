@@ -1,23 +1,27 @@
-FROM python:3.9-slim-bullseye AS builder
-ENV REPO deb.debian.org
-ENV GIT_COMMITTER_NAME Dummy
-ENV GIT_COMMITTER_EMAIL dummy@example.org
+FROM python:3.11-slim-bookworm AS builder
+ENV REPO=deb.debian.org
+ENV GIT_COMMITTER_NAME=Dummy
+ENV GIT_COMMITTER_EMAIL=dummy@example.org
 # We need source archives as well
 RUN echo "\n\
 \
-deb http://security.debian.org/ bullseye-security main contrib non-free\n\
-deb-src http://security.debian.org/ bullseye-security main contrib non-free\n\
-deb http://$REPO/debian bullseye main contrib non-free\n\
-deb-src http://$REPO/debian bullseye main contrib non-free\n\
-deb http://$REPO/debian bullseye-updates main contrib non-free\n\
-deb-src http://$REPO/debian bullseye-updates main contrib non-free\n\
-deb http://deb.debian.org/debian bullseye-backports main contrib non-free\n\
+deb http://security.debian.org/ bookworm-security main contrib non-free\n\
+deb-src http://security.debian.org/ bookworm-security main contrib non-free\n\
+deb http://$REPO/debian bookworm main contrib non-free\n\
+deb-src http://$REPO/debian bookworm main contrib non-free\n\
+deb http://$REPO/debian bookworm-updates main contrib non-free\n\
+deb-src http://$REPO/debian bookworm-updates main contrib non-free\n\
 " > /etc/apt/sources.list
+
+# We're using mount caches, so don't clean the apt cache after every apt command!
+RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
 
 # Unfortunately, we need heaps of stuff just to build the docs, since autodoc
 # requires Python imports to work. In other words, these requirements are
 # normally only needed for the runtime.
-RUN apt-get update \
+RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
+    --mount=target=/var/cache/apt,type=cache,sharing=locked \
+    apt-get update \
     && apt-get -y --no-install-recommends build-dep \
        python3-psycopg2 \
        python3-lxml \
@@ -25,14 +29,16 @@ RUN apt-get update \
        python3-ldap
 
 # Enable us to build the python-gammu module:
-RUN apt-get update \
+RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
+    --mount=target=/var/cache/apt,type=cache,sharing=locked \
+    apt-get update \
     && apt-get -y install \
-       libgammu-dev
-
-# No git in slim image
-RUN apt-get update \
-    && apt-get -y install \
-       git
+       # Enable us to build the python-gammu module \
+       libgammu-dev \
+       # No git in slim image \
+       git \
+       # Need NodeJS/npm to build static web resources \
+       npm
 
 # Build wheels from requirements so they can be re-used in a production image
 # without installing all the dev tools there too
@@ -45,12 +51,20 @@ ARG NAV_VERSION
 RUN git clone https://github.com/Uninett/nav.git nav --branch ${NAV_VERSION} --depth 1
 RUN mkdir -p .wheels
 RUN --mount=type=cache,target=/root/.cache/pip pip3 wheel -w ./.wheels/ -r nav/requirements.txt -c nav/constraints.txt python-gammu==3.2.4
+RUN cd ./nav; make sassbuild
 RUN --mount=type=cache,target=/root/.cache/pip pip3 install --root="/source/.build" ./nav
 
-# Now, build the actual installation stage
-FROM python:3.9-slim-bullseye
+############################################
+# Now, build the actual installation stage #
+############################################
+FROM python:3.11-slim-bookworm
 
-RUN apt-get update \
+# We're using mount caches, so don't clean the apt cache after every apt command!
+RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
+
+RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
+    --mount=target=/var/cache/apt,type=cache,sharing=locked \
+    apt-get update \
     && apt-get -y --no-install-recommends install \
        tini \
        supervisor \
@@ -64,8 +78,8 @@ RUN apt-get update \
        libpq5 \
        git \
        gpg \
-       postgresql-client \
-    && rm -rf /var/lib/apt/lists/*
+       postgresql-client
+
 
 # Use tini as our image init process
 ENTRYPOINT ["/usr/bin/tini", "--", "/docker-entrypoint.sh"]
@@ -105,10 +119,10 @@ RUN a2dissite 000-default; a2ensite nav-site
 CMD ["/usr/bin/supervisord", "-n"]
 
 # Final environment
-ENV    PATH /usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin
-ENV    ADMIN_MAIL root@localhost
-ENV    DEFAULT_FROM_EMAIL nav@localhost
-ENV    DOMAIN_SUFFIX .example.org
+ENV    PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin
+ENV    ADMIN_MAIL=root@localhost
+ENV    DEFAULT_FROM_EMAIL=nav@localhost
+ENV    DOMAIN_SUFFIX=.example.org
 
 VOLUME ["/var/log/nav", "/var/lib/nav/uploads/images/rooms"]
 EXPOSE 80
