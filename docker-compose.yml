@@ -1,9 +1,11 @@
+x-nav-version: &nav-version 5.13.2
+
 services:
   nav:
     build:
       context: .
       args:
-        NAV_VERSION: 5.13.2
+        NAV_VERSION: *nav-version
     ports:
       - "80:80"
       - "162:162/udp"
@@ -40,7 +42,10 @@ services:
     restart: always
 
   carbon-cache:
-    build: ./carbon-cache
+    build:
+      context: ./carbon-cache
+      args:
+        NAV_VERSION: *nav-version
     volumes:
       - whisper:/var/lib/graphite/whisper:z
     restart: always
