@@ -7,7 +7,8 @@ RUN apt-get update && apt-get install -y tini
 ENTRYPOINT ["/usr/bin/tini", "--"]
 
 ENV GRAPHITE_CONF_DIR=/etc/graphite
-ENV GRAPHITE_STORAGE_DIR=/var/lib/graphite/whisper
+# Keep graphite.db out of the whisper volume shared with carbon-cache
+ENV GRAPHITE_STORAGE_DIR=/var/lib/graphite
 
 RUN apt-get -y update && \
     apt-get -y install graphite-web supervisor nginx gunicorn
@@ -22,7 +23,7 @@ COPY local_settings.py ${GRAPHITE_CONF_DIR}/local_settings.py
 # Initialize database
 ENV DJANGO_SETTINGS_MODULE=graphite.settings
 ENV GRAPHITE_SETTINGS_MODULE=local_settings
-RUN mkdir -p ${GRAPHITE_STORAGE_DIR} && chown _graphite:_graphite ${GRAPHITE_STORAGE_DIR}
+RUN mkdir -p ${GRAPHITE_STORAGE_DIR}/whisper && chown -R _graphite:_graphite ${GRAPHITE_STORAGE_DIR}
 
 USER _graphite
 RUN /usr/bin/django-admin migrate --run-syncdb
