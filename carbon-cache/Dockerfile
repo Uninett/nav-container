@@ -1,4 +1,4 @@
-FROM debian:bullseye-slim
+FROM debian:trixie-slim
 LABEL description="A carbon-cache instance configured explicitly for use with NAV"
 LABEL maintainer="Morten Brekkevold <morten.brekkevold@sikt.no>"
 

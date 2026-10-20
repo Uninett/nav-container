@@ -1,4 +1,4 @@
-FROM debian:bullseye-slim
+FROM debian:trixie-slim
 LABEL description="A graphite-web instance for NAV"
 LABEL maintainer="Morten Brekkevold <morten.brekkevold@sikt.no>"
 
@@ -9,16 +9,8 @@ ENTRYPOINT ["/usr/bin/tini", "--"]
 ENV GRAPHITE_CONF_DIR /etc/graphite
 ENV GRAPHITE_STORAGE_DIR /var/lib/graphite/whisper
 
-# Add NAV's APT repository to get the graphite-web backported package
-RUN apt-get update && \
-    apt-get install -y curl apt-transport-https ca-certificates dirmngr software-properties-common && \
-    mkdir -p --mode=0755 /usr/local/share/keyrings && \
-    curl -fsSL https://nav.uninett.no/debian/gpg | gpg --dearmor | tee /usr/local/share/keyrings/nav.gpg >/dev/null && \
-    echo 'deb [signed-by=/usr/local/share/keyrings/nav.gpg] https://nav.uninett.no/debian bullseye nav' \
-      | tee /etc/apt/sources.list.d/nav.list
-
 RUN apt-get -y update && \
-    apt-get -y install graphite-web supervisor nginx-light gunicorn
+    apt-get -y install graphite-web supervisor nginx gunicorn
 
 # Basic configuration and permissions
 
