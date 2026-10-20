@@ -13,7 +13,7 @@ nav:
 	docker tag $(REPO)/nav:latest $(REPO)/nav:$(nav_version)
 
 carbon-cache:
-	docker build -t $(REPO)/nav-carbon-cache carbon-cache
+	docker build --build-arg NAV_VERSION=$(nav_version) -t $(REPO)/nav-carbon-cache carbon-cache
 
 graphite-web:
 	docker build -t $(REPO)/graphite-web graphite-web

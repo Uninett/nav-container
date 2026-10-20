@@ -25,9 +25,12 @@ you can explicitly build a specific NAV version by adding a build argument,
 like this:
 
 ```
-docker compose build --build-arg NAV_VERSION=5.13.2 nav
+docker compose build --build-arg NAV_VERSION=5.13.2 nav carbon-cache
 docker compose up
 ```
+
+Both images need the same NAV version, since `carbon-cache` installs the
+Graphite storage configuration recommended by that NAV version.
 
 ## How it's organized
 
