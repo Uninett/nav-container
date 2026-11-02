@@ -1,7 +1,7 @@
 # Containerized NAV distribution
 
 This project aims to package NAV for containerized production distribution,
-using Docker and docker-compose, which could later be used as a basis for
+using Docker and Docker Compose, which could later be used as a basis for
 deploying on Kubernetes.
 
 
@@ -11,7 +11,7 @@ This command should be sufficient to get things up and running using Docker
 Compose:
 
 ```
-docker-compose up
+docker compose up
 ```
 
 This should bring up various containers, for NAV, PostgreSQL and Graphite.
@@ -25,8 +25,8 @@ you can explicitly build a specific NAV version by adding a build argument,
 like this:
 
 ```
-docker-compose build --build-arg NAV_VERSION=5.13.2 nav
-docker-compose up
+docker compose build --build-arg NAV_VERSION=5.13.2 nav
+docker compose up
 ```
 
 ## How it's organized

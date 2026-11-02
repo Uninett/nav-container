@@ -1,4 +1,4 @@
-FROM debian:bullseye-slim
+FROM debian:trixie-slim
 LABEL description="A carbon-cache instance configured explicitly for use with NAV"
 LABEL maintainer="Morten Brekkevold <morten.brekkevold@sikt.no>"
 
@@ -6,7 +6,7 @@ LABEL maintainer="Morten Brekkevold <morten.brekkevold@sikt.no>"
 RUN apt-get update && apt-get install -y tini
 ENTRYPOINT ["/usr/bin/tini", "--"]
 
-ENV GRAPHITE_CONF_DIR /etc/carbon
+ENV GRAPHITE_CONF_DIR=/etc/carbon
 
 RUN apt-get update && apt-get install -y graphite-carbon
 
